@@ -16,7 +16,7 @@
 const char *network = "********";
 const char *password = "********";
 
-const char *ip = "111.111.111.111";
+const char *ip = "xxx.xxx.xxx.xxx";
 const unsigned int port = 8000;
 
 //=============================================
