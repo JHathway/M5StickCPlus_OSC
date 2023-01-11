@@ -1,26 +1,49 @@
+//=============================================
+// SendOSC example
+//
+// Button A counts up and sends OSC message
+// Button B counts down and sends OSC message
+// Hold Button A to reset counter
+//=============================================
+
 #include <M5StickCPlus.h>
 
 #include "M5StickOSC.h"
 #include "M5StickWiFi.h"
-#include "PrivateVariables.h"
 
+//=============================================
+// CHANGE THESE VARIABLES
+const char *network = "********";
+const char *password = "********";
+
+const char *ip = "111.111.111.111";
+const unsigned int port = 8000;
+
+//=============================================
+// GLOBAL VARIABLES
 int counter = 0;
 
+// SendOSC class instance
 SendOSC osc;
 
+//=============================================
+// SETUP
 void setup()
 {
   M5.begin();
 
-  connectToWifi(NETWORK_NAME, NETWORK_PASSWORD);
+  // connect to network
+  connectToWifi(network, password);
   
-  osc.sendTo("192.168.71.123", 7374);
+  // IP address and port to send to
+  osc.sendTo(ip, port);
 
-  
   M5.Lcd.setRotation(1);
   M5.Lcd.setTextSize(5);
 }
 
+//=============================================
+// PRINT OUT DATA
 void printCountData()
 {
   // clear screen
@@ -35,16 +58,21 @@ void printCountData()
   M5.Lcd.setTextColor(RED);
   M5.Lcd.setTextSize(5);
   M5.Lcd.print(counter);
-
+  
+  // SEND OSC MESSAGE
   osc.sendOscMessage<int>("/count", counter);
 }
 
+//=============================================
+// LOOP
 void loop()
 {
   
+  //============================================
+  // BUTTON B
   if (digitalRead(M5_BUTTON_HOME) == LOW)
   {
-    // increment counter, print
+    // increment counter, print, send osc
     counter++;
     printCountData();
 
@@ -61,7 +89,7 @@ void loop()
       // if held for 2 secs
       if (time == 2000)
       {
-        // reset counter, print
+        // reset counter, print, send osc
         counter = 0;
         printCountData();
       }
@@ -72,7 +100,7 @@ void loop()
   // BUTTON B
   if (digitalRead(M5_BUTTON_RST) == LOW)
   {
-    // decrease counter, print
+    // decrease counter, print, send osc
     counter--;
     printCountData();
 
