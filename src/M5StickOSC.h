@@ -44,7 +44,6 @@ private:
 
     OSCErrorCode error;
     WiFiUDP Udp;
-    static float output;
 
 public:
 
@@ -83,8 +82,6 @@ public:
     static void led(OSCMessage &msg)
     {
         float messageIn = msg.getFloat(0);
-
-        output = messageIn;
 
         M5.Lcd.fillScreen(BLACK);
         M5.Lcd.setCursor(0, 0);
