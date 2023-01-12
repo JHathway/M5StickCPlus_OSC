@@ -8,3 +8,4 @@ PrivateVariables.h
 include/
 lib/
 test/
+platformio.ini

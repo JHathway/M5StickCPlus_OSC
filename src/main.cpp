@@ -13,6 +13,7 @@ void setup()
   M5.begin();
 
   connectToWifi(NETWORK_NAME, NETWORK_PASSWORD);
+  M5.Lcd.print(WiFi.localIP());
   
   osc.init(7375);
 
