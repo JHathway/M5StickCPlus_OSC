@@ -7,16 +7,11 @@
 //     - Function for connecting M5StickC Plus to WiFI Network.
 //     - Requires nextwork name and password.
 //     - Prints out message on LCD when successful/failed.
-// 
-// Dependencies:
-//     - M5StickCPlus (M5Stack)
-//     - WiFi.h (Arduino)
 //=============================================================
 
 #include <WiFi.h>
 
-#define PRINT(x) M5.Lcd.print(x)
-#define PRINT_LN(x) M5.Lcd.println(x)
+WiFiClient client;
 
 /// Function for connecting M5 board to WiFi
 /// @param myNetwork (const char*) name of network
@@ -24,7 +19,7 @@
 /// @param timeout (int) optional - time spent attempting to access network
 void connectToWifi(const char* myNetwork, const char* myPassword, int timeout = 20000) {
   
-  PRINT("Connecting");
+  M5.Lcd.printf("Connecting");
 
   // initialise - WIFI_STA = Station Mode, WIFI_AP = Access Point Mode 
   WiFi.mode(WIFI_STA);
@@ -35,18 +30,19 @@ void connectToWifi(const char* myNetwork, const char* myPassword, int timeout = 
 
   // while not connected to WiFi AND before timeout
   while (WiFi.status() != WL_CONNECTED && millis() - startAttemptTime < timeout) {
-    PRINT(".");
+    M5.Lcd.printf(".");
     delay(400);
   }
 
   // if failed, print LCD message
   if (WiFi.status() != WL_CONNECTED) {
-    PRINT_LN("\nFailed!");
+    M5.Lcd.println(" Failed!");
+    delay(2000);
   }
   // if successful, print LCD message
   else {
-    PRINT_LN("\nConnected to:");
-    PRINT_LN(myNetwork);
+    M5.Lcd.println("\nConnected to:");
+    M5.Lcd.println(myNetwork);
     delay(2000);
   }
 }
