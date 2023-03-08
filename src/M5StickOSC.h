@@ -1,37 +1,28 @@
 #include <WiFiUdp.h>
 #include <OSCMessage.h> // Adrien Freed
 
-#define PRINT(x) M5.Lcd.print(x);
-#define PRINT_LN(x) M5.Lcd.println(x);
-#define PRINT_F(x, y) M5.Lcd.printf(x, y);
+WiFiUDP _udp;
 
-class SendOSC
+const char *_udpAddress;
+int _udpPort;
+
+template <typename T>
+void sendOscMessage(const char *_address, T _message)
 {
-    WiFiUDP udp;
+    OSCMessage _oscMsg(_address); // First argument is OSC address
+    _oscMsg.add((T)_message);     // Then append the data
+    _udp.beginPacket(_udpAddress, _udpPort);
+    _oscMsg.send(_udp); // send the bytes to the SLIP stream
+    _udp.endPacket();       // mark the end of the OSC Packet
+    _oscMsg.empty();   // free space occupied by message
+}
 
-    const char *udpAddress;
-    int udpPort;
+void sendTo(const char *_address, int _port)
+{
+    _udpAddress = _address;
+    _udpPort = _port;
 
-public:
-
-    template <typename T>
-    void sendOscMessage(const char *address, T message)
-    {
-        OSCMessage oscPitchMsg(address); // First argument is OSC address
-        oscPitchMsg.add((T)message);     // Then append the data
-        udp.beginPacket(udpAddress, udpPort);
-        oscPitchMsg.send(udp); // send the bytes to the SLIP stream
-        udp.endPacket();       // mark the end of the OSC Packet
-        oscPitchMsg.empty();   // free space occupied by message
-    }
-
-    void sendTo(const char *address, int port)
-    {
-        udpAddress = address;
-        udpPort = port;
-
-        PRINT_LN("Sending to:");
-        PRINT_LN("IP: " + String(udpAddress));
-        PRINT_F("Port: %i", udpPort);
-    }
-};
+    M5.Lcd.println("Sending to:");
+    M5.Lcd.println("IP: " + String(_udpAddress));
+    M5.Lcd.printf("Port: %i", _udpPort);
+}

@@ -3,7 +3,6 @@
 //
 // Button A counts up and sends OSC message
 // Button B counts down and sends OSC message
-// Hold Button A to reset counter
 //=============================================
 
 #include <M5StickCPlus.h>
@@ -13,8 +12,8 @@
 
 //=============================================
 // CHANGE THESE VARIABLES
-const char *network = "JoesPhone";
-const char *password = "12345678";
+const char *network = "UoE-Device";
+const char *password = "gaDuziTe";
 
 const char *ip = "10.126.176.199";
 const unsigned int port = 8000;
@@ -22,9 +21,6 @@ const unsigned int port = 8000;
 //=============================================
 // GLOBAL VARIABLES
 int counter = 0;
-
-// SendOSC class instance
-SendOSC osc;
 
 //=============================================
 // SETUP
@@ -36,7 +32,7 @@ void setup()
   connectToWifi(network, password);
 
   // IP address and port to send to
-  osc.sendTo(ip, port);
+  sendTo(ip, port);
 
   M5.Lcd.setRotation(1);
   M5.Lcd.setTextSize(5);
@@ -48,7 +44,7 @@ void loop()
 {
   //============================================
   // HOME BUTTON PRESSED 
-  // M5_BUTTON_RST for reset button
+  // Count up
   if (digitalRead(M5_BUTTON_HOME) == LOW)
   {
     // increment counter, print, send osc
@@ -62,9 +58,29 @@ void loop()
     M5.Lcd.print(counter);
 
     // SEND OSC MESSAGE
-    osc.sendOscMessage<int>("/count", counter);
-    osc.sendOscMessage<>("/count", counter);
+    sendOscMessage<int>("/count", counter);
 
     while (digitalRead(M5_BUTTON_HOME) == LOW) {}
+  }
+
+  //============================================
+  // RESET BUTTON PRESSED
+  // Count down
+  if (digitalRead(M5_BUTTON_RST) == LOW)
+  {
+    // decrease counter, print, send osc
+    counter--;
+
+    // clear screen
+    M5.Lcd.fillScreen(BLACK);
+    M5.Lcd.setTextColor(WHITE);
+    M5.Lcd.setCursor(0, 0);
+    M5.Lcd.setTextSize(5);
+    M5.Lcd.print(counter);
+
+    // SEND OSC MESSAGE
+    sendOscMessage<int>("/count", counter);
+
+    while (digitalRead(M5_BUTTON_RST) == LOW) {}
   }
 }
