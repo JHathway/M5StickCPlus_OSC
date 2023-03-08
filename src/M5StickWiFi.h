@@ -34,12 +34,11 @@ void connectToWifi(const char* myNetwork, const char* myPassword, int timeout = 
     delay(400);
   }
 
-  // if failed, print LCD message
+  // Print status to LCD
   if (WiFi.status() != WL_CONNECTED) {
     M5.Lcd.println(" Failed!");
     delay(2000);
   }
-  // if successful, print LCD message
   else {
     M5.Lcd.println("\nConnected to:");
     M5.Lcd.println(myNetwork);
